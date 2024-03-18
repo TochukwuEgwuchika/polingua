@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Polingua</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        height: 100vh;
+        padding: 0;
+        margin: 0;
+        gap: -55px;
+        
+      }
+
+      button {
+        border-radius: 50%;
+        width: 200px;
+        height: 200px;
+        background-color: rgb(203, 148, 255);
+        color: white;
+        border: 0;
+        font-size: 28px;
+        font-family: Bebas;
+      }
+
+      button:hover {
+        background-color: rgb(75, 9, 137);
+        border: 3px solid rgb(118, 134, 255);
+      }
+
+      p {
+        border-radius: 5px;
+        /* padding: 15px; */
+        font-family: "Inter";
+        max-width: 300px;
+        padding: 5px 15px;
+        background-color: rgba(109, 109, 255, 0.966);
+        color: white;
+        min-width: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <button onclick="startSpeechRecognition()">
+      Start <br />
+      Speech <br />
+      Recognition
+    </button>
+    <p id="output">English: ...</p>
+    <p id="igbo">Igbo: ...</p>
+    <p id="hausa">Hausa: ...</p>
+    <p id="yoruba">Yoruba: ...</p>
+
+    <script>
+      function startSpeechRecognition() {
+        const recognition =
+          new webkitSpeechRecognition() || new SpeechRecognition();
+
+        recognition.lang = "en-US";
+
+        recognition.onresult = function (event) {
+          const transcript = event.results[0][0].transcript;
+          document.getElementById("output").textContent =
+            "English: " + transcript;
+
+          const textToTranslate = transcript; // Replace "Your text here" with the text you want to translate
+          const langpair1 = "en|ig"; // Language pair
+          const langpair2 = "en|yo"; // Language pair
+          const langpair3 = "en|ha"; // Language pair
+
+          // Encode text to ensure it is properly formatted for the URL
+          const encodedText = encodeURIComponent(textToTranslate);
+
+          // Construct the URL with the dynamic text
+          const url1 = `https://api.mymemory.translated.net/get?q=${encodedText}&langpair=${langpair1}`;
+          const url2 = `https://api.mymemory.translated.net/get?q=${encodedText}&langpair=${langpair2}`;
+          const url3 = `https://api.mymemory.translated.net/get?q=${encodedText}&langpair=${langpair3}`;
+
+          fetch(url1)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              document.getElementById("igbo").textContent =
+                "Igbo:" + data.responseData.translatedText;
+              console.log(data.responseData.translatedText); // Handle response data here
+            })
+            .catch((error) => {
+              console.error(
+                "There was a problem with the fetch operation:",
+                error
+              );
+            });
+
+          fetch(url2)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              document.getElementById("yoruba").textContent =
+                "Yoruba: " + data.responseData.translatedText;
+              console.log(data.responseData.translatedText); // Handle response data here
+            })
+            .catch((error) => {
+              console.error(
+                "There was a problem with the fetch operation:",
+                error
+              );
+            });
+
+          fetch(url3)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              document.getElementById("hausa").textContent =
+                "Hausa:" + data.responseData.translatedText;
+              console.log(data.responseData.translatedText); // Handle response data here
+            })
+            .catch((error) => {
+              console.error(
+                "There was a problem with the fetch operation:",
+                error
+              );
+            });
+        };
+
+        recognition.onerror = function (event) {
+          console.error("Speech recognition error:", event.error);
+        };
+
+        recognition.start();
+      }
+    </script>
+  </body>
+</html>
