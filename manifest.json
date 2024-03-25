@@ -1,0 +1,15 @@
+{
+  "name": "Polingua",
+  "short_name": "Polingua",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "895x900",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000"
+}
